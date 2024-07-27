@@ -1,16 +1,12 @@
-// ignore_for_file: prefer_const_constructors, avoid_print
-
-// ignore: avoid_web_libraries_in_flutter
-
-import 'package:aetram_task/news/view/static.dart';
-import 'package:aetram_task/news/view/widget/selected_country.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'package:aetram_task/news/controller/api.dart';
 
 import '../model/news.dart';
+import '../controller/api.dart';
+import 'category.dart';
+import 'widget/selected_country.dart';
 
 class NewsHome extends StatefulWidget {
   const NewsHome({super.key});
@@ -45,12 +41,11 @@ class _NewsHomeState extends State<NewsHome> {
     if (data != null) {
       country = data['country_code'];
       countryName = data['country_name'];
-      category = null;
       page = 1;
-      setState(() {});
+      news = null;
       await _fetchUsers();
-      setState(() {});
     }
+    setState(() {});
   }
 
   Future<void> _fetchUsers() async {
@@ -79,17 +74,18 @@ class _NewsHomeState extends State<NewsHome> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('News Feeds'),
+        title: const Text('News Feeds'),
         actions: [
           TextButton.icon(
-              onPressed: () async {
-                await countryNameFind();
-              },
-              icon: Icon(Icons.edit_location_alt),
-              label: Text(
-                countryName,
-                style: TextStyle(overflow: TextOverflow.ellipsis),
-              ))
+            onPressed: () async {
+              await countryNameFind();
+            },
+            icon: const Icon(Icons.edit_location_alt),
+            label: Text(
+              countryName,
+              style: const TextStyle(overflow: TextOverflow.ellipsis),
+            ),
+          )
         ],
         centerTitle: true,
       ),
@@ -98,44 +94,8 @@ class _NewsHomeState extends State<NewsHome> {
           if (news != null) ...[
             Column(
               children: [
-                SizedBox(
-                  height: 45,
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    scrollDirection: Axis.horizontal,
-                    itemCount: StaticData.category.length,
-                    itemBuilder: (context, index) => InkWell(
-                      onTap: () {
-                        news = null;
-                        page = 1;
-                        if (index != 0) {
-                          category = StaticData.category[index];
-                        } else {
-                          category = null;
-                        }
-                        _fetchUsers();
-                      },
-                      child: Container(
-                        margin: EdgeInsets.all(5),
-                        padding: EdgeInsets.all(5),
-                        decoration: BoxDecoration(
-                          color: StaticData.category[index] == category
-                              ? Colors.green[800]
-                              : null,
-                          border: Border.all(),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Text(
-                          StaticData.category[index].toUpperCase(),
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+                const SizedBox(height: 45, child: CategoryWidget()),
+                const Divider(),
                 Expanded(
                   child: ListView.separated(
                     separatorBuilder: (context, index) => Divider(
@@ -143,7 +103,7 @@ class _NewsHomeState extends State<NewsHome> {
                     ),
                     shrinkWrap: true,
                     controller: controller,
-                    physics: BouncingScrollPhysics(),
+                    physics: const BouncingScrollPhysics(),
                     itemCount: news!.articles?.length ?? 0,
                     itemBuilder: (context, index) {
                       if (news!.articles != null) {
@@ -161,11 +121,11 @@ class _NewsHomeState extends State<NewsHome> {
                                         Image.network(article.urlToImage,
                                             errorBuilder:
                                                 (context, error, stackTrace) =>
-                                                    SizedBox()),
+                                                    const SizedBox()),
                                       ],
                                       Text(
                                         article.title ?? '',
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           color: Colors.white,
                                           fontWeight: FontWeight.bold,
                                         ),
@@ -195,7 +155,7 @@ class _NewsHomeState extends State<NewsHome> {
                                       webOnlyWindowName: '_self',
                                     );
                                   } catch (e) {
-                                    print(e);
+                                    debugPrint(e.toString());
                                   }
                                 } else {
                                   Navigator.push(
@@ -211,13 +171,14 @@ class _NewsHomeState extends State<NewsHome> {
                                 }
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text('No URL found')));
+                                    const SnackBar(
+                                        content: Text('No URL found')));
                               }
                             },
                           ),
                         );
                       } else {
-                        return Center(child: Text('article error'));
+                        return const Center(child: Text('article error'));
                       }
                     },
                   ),
@@ -276,10 +237,13 @@ class _WebViewNewsState extends State<WebViewNews> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('WebView'),
+      ),
       body: SafeArea(
         child: loading == 100
             ? WebViewWidget(controller: controller)
-            : Center(
+            : const Center(
                 child: CircularProgressIndicator(),
               ),
       ),

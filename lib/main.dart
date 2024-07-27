@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'news/view/news.dart';
-// import 'weather/weather.dart';
+import 'weather/controller/weather.dart';
+import 'weather/weather.dart';
 
 void main() {
   runApp(const MyApp());
@@ -10,19 +12,23 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+  final bool which = true;
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        brightness: Brightness.dark,
-        // colorScheme:
-        //     ColorScheme.fromSeed(seedColor: Colors.greenAccent.shade100),
-        useMaterial3: true,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => WeatherProvider()),
+      ],
+      child: MaterialApp(
+        title: 'Weather & News',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          brightness: Brightness.dark,
+          useMaterial3: true,
+        ),
+        home: which ? const WeatherHome() : const NewsHome(),
       ),
-      home: const NewsHome(),
-      // home: const WeatherHome(),
     );
   }
 }
