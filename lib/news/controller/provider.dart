@@ -72,6 +72,12 @@ class NewsTempProvider extends ChangeNotifier {
   final int pageSize = 15;
   String? category;
   String? country;
+  
+  hotNews(String newsTitle) {
+    page = 1;
+    news = null;
+    newsApiCall(newsTitle);
+  }
 
   newsApiCall(String newsTitle) async {
     changeLoad(true);

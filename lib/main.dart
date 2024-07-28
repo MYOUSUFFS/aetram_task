@@ -1,14 +1,17 @@
 import 'package:aetram_task/news/controller/provider.dart';
-import 'package:aetram_task/provider.dart';
-import 'package:aetram_task/setting.dart';
+import 'package:aetram_task/setting/provider.dart';
+import 'package:aetram_task/setting/setting.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'news/view/news.dart';
+import 'setting/local.dart';
 import 'weather/controller/provider.dart';
 import 'weather/view/weather.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await SharedPreferencesService.init();
   runApp(const MyApp());
 }
 
@@ -47,18 +50,24 @@ class Screen extends StatefulWidget {
 }
 
 class _ScreenState extends State<Screen> {
+  late WeatherProvider weather;
+  late ScreenProvider screen;
+
   @override
   void initState() {
+    weather = Provider.of<WeatherProvider>(context, listen: false);
+    screen = Provider.of<ScreenProvider>(context, listen: false);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      await Provider.of<WeatherProvider>(context, listen: false)
-          .futureWeatherDataFn(context);
+      await weather.futureWeatherDataFn(context);
+      weather.temp = SharedPreferencesService.getTemp();
     });
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    final screen = Provider.of<ScreenProvider>(context);
+    screen = Provider.of<ScreenProvider>(context);
+    weather = Provider.of<WeatherProvider>(context);
     switch (screen.screenIndex) {
       case 0:
         return const WeatherHome();

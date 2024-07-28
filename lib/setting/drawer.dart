@@ -1,7 +1,8 @@
-import 'package:aetram_task/news/view/news.dart';
-import 'package:aetram_task/setting.dart';
-import 'package:aetram_task/weather/view/weather.dart';
 import 'package:flutter/material.dart';
+
+import '../news/view/news.dart';
+import '../weather/view/weather.dart';
+import 'setting.dart';
 
 class ScreenSize {
   static double mobile = 600;

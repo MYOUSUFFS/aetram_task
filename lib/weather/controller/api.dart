@@ -41,23 +41,4 @@ class WeatherApi {
       throw Exception('Failed to load weather data');
     }
   }
-
-  // Future<dynamic> weatherApi(BuildContext context) async {
-  //   final weather = Provider.of<WeatherProvider>(context, listen: false);
-  //   try {
-  //     final position = await weather.setLatLog();
-  //     String url =
-  //         "$apiUrl${apiVersion}weather?lat=${position.latitude}&lon=${position.latitude}&apiKey=${WeatherStaticData.apiKey}";
-  //     final response = await http.get(Uri.parse(url));
-  //     if (response.statusCode == 200) {
-  //       final jsonData = jsonDecode(response.body);
-  //       return jsonData;
-  //     } else {
-  //       throw Exception('Failed to load users');
-  //     }
-  //   } catch (e) {
-  //     print(e);
-  //     return null;
-  //   }
-  // }
 }

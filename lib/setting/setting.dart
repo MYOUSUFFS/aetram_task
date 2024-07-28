@@ -1,10 +1,10 @@
-import 'package:aetram_task/news/controller/provider.dart';
-import 'package:aetram_task/news/view/utils/static.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../news/controller/provider.dart';
+import '../news/view/utils/static.dart';
 import 'drawer.dart';
-import 'weather/controller/provider.dart';
+import '../weather/controller/provider.dart';
 
 class SettingScreen extends StatelessWidget {
   SettingScreen({super.key});

@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-import '../../drawer.dart';
+import '../../setting/drawer.dart';
 import '../../news/view/news.dart';
 import '../controller/api.dart';
 import '../controller/provider.dart';

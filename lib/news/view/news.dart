@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-import '../../drawer.dart';
+import '../../setting/drawer.dart';
 import '../controller/provider.dart';
 import '../model/news.dart';
 import 'utils/utils.dart';
@@ -146,6 +146,7 @@ class _NewsListState extends State<NewsList> {
   @override
   Widget build(BuildContext context) {
     newsProvider = Provider.of<NewsProvider>(context);
+    newsTempProvider = Provider.of<NewsTempProvider>(context);
     if (widget.temperature) {
       news = newsTempProvider.news;
     } else {

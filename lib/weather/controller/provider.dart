@@ -1,5 +1,9 @@
+import 'package:aetram_task/news/controller/provider.dart';
+import 'package:aetram_task/setting/local.dart';
+import 'package:aetram_task/weather/controller/utils/temperature.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:provider/provider.dart';
 
 import '../model/weather.dart';
 import 'api.dart';
@@ -20,12 +24,17 @@ class WeatherProvider extends ChangeNotifier {
   futureWeatherDataFn(
     BuildContext context,
   ) async {
-    loadChange(true);
-    WeatherData? value = await WeatherApi().fetchWeatherData(context);
-    _futureWeatherData = value;
-    _currentTemp = value.main.temp;
-    loadChange(false);
-    notifyListeners();
+    if (_futureWeatherData == null) {
+      final newsTemp = Provider.of<NewsTempProvider>(context, listen: false);
+      loadChange(true);
+      WeatherData? value = await WeatherApi().fetchWeatherData(context);
+      _futureWeatherData = value;
+      _currentTemp = value.main.temp;
+      final modeOf = Temperature.tempNews(_currentTemp!);
+      newsTemp.hotNews(modeOf);
+      loadChange(false);
+      notifyListeners();
+    }
   }
 
   double? _currentTemp;
@@ -34,7 +43,13 @@ class WeatherProvider extends ChangeNotifier {
   String _temp = 'celsius';
   String get temp => _temp;
 
-  tempFn(String value) {
+  set temp(String? value) {
+    _temp = value ?? _temp;
+    notifyListeners();
+  }
+
+  tempFn(String value) async {
+    await SharedPreferencesService.setTemp(value);
     _temp = value;
     notifyListeners();
   }
