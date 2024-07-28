@@ -1,9 +1,6 @@
-import 'package:aetram_task/setting/provider.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import '../news/view/news.dart';
-import '../weather/view/weather.dart';
 import 'setting.dart';
 
 class ScreenSize {
@@ -19,7 +16,6 @@ class AppDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ScreenProvider screenProvider = Provider.of<ScreenProvider>(context);
     return Drawer(
       backgroundColor: colors,
       child: ListView(
@@ -30,13 +26,6 @@ class AppDrawer extends StatelessWidget {
             ),
             child: const Text('Weather & News'),
           ),
-          if (pagename != 'Weather' && screenProvider.locationStatus)
-            ListTile(
-              title: const Text('Weather'),
-              onTap: () {
-                push(context, const WeatherHome());
-              },
-            ),
           if (pagename != 'News')
             ListTile(
               title: const Text('News'),

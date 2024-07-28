@@ -83,9 +83,10 @@ class _ScreenState extends State<Screen> {
   }
 
   Future<bool> _getLocation() async {
-    var status = await Permission.location.request();
+    var getStatus = await Permission.location.request();
     bool serviceEnabled = await _location();
-    if (status == PermissionStatus.granted && serviceEnabled) {
+    bool status = getStatus == PermissionStatus.granted;
+    if (status && serviceEnabled) {
       permissionIs = true;
       setState(() {});
       return permissionIs;
