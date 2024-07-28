@@ -32,7 +32,7 @@ class WeatherData {
   });
 
   factory WeatherData.fromJson(Map<String, dynamic> json) {
-    var forecastList = json['forecast'] as List?;
+    var forecastList = json['list'] as List?;
     List<Forecast>? forecastItems =
         forecastList?.map((i) => Forecast.fromJson(i)).toList();
 

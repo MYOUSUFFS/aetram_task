@@ -1,9 +1,9 @@
-import 'package:aetram_task/weather/controller/api.dart';
-import 'package:aetram_task/weather/weather_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'controller/api.dart';
 import 'controller/weather.dart';
+import 'weather_screen.dart';
 
 class WeatherHome extends StatefulWidget {
   const WeatherHome({super.key});
@@ -24,7 +24,6 @@ class _WeatherHomeState extends State<WeatherHome> {
   }
 
   Future<void> getApiCall() async {
-    weather.setLatLog();
     await WeatherApi().weatherApi(context);
   }
 
@@ -34,15 +33,9 @@ class _WeatherHomeState extends State<WeatherHome> {
     return Scaffold(
       body: Stack(
         children: [
-          const SafeArea(
-            child: Center(child: WeatherScreen()
-                // Text('Weather ${weather.lat}, ${weather.lon}'),
-                ),
-          ),
+          const SafeArea(child: Center(child: WeatherScreen())),
           if (weather.isLoading) ...[
-            const Center(
-              child: CircularProgressIndicator(),
-            ),
+            const Center(child: CircularProgressIndicator()),
           ]
         ],
       ),

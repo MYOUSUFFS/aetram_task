@@ -18,12 +18,13 @@ class WeatherProvider extends ChangeNotifier {
   double _lon = 0.0;
   double get lon => _lon;
 
-  void setLatLog() async {
+  Future<Position> setLatLog() async {
     loadChange(true);
     Position position = await PositionIs().getCurrentLocation();
     _lat = position.latitude;
     _lon = position.longitude;
     notifyListeners();
     loadChange(false);
+    return position;
   }
 }

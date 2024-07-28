@@ -1,3 +1,4 @@
+import 'package:aetram_task/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -18,6 +19,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => ScreenProvider()),
         ChangeNotifierProvider(create: (_) => WeatherProvider()),
       ],
       child: MaterialApp(
@@ -27,8 +29,30 @@ class MyApp extends StatelessWidget {
           brightness: Brightness.dark,
           useMaterial3: true,
         ),
-        home: which ? const WeatherHome() : const NewsHome(),
+        home: const Screen(),
       ),
     );
+  }
+}
+
+class Screen extends StatefulWidget {
+  const Screen({super.key});
+
+  @override
+  State<Screen> createState() => _ScreenState();
+}
+
+class _ScreenState extends State<Screen> {
+  @override
+  Widget build(BuildContext context) {
+    final screen = Provider.of<ScreenProvider>(context);
+    switch (screen.screenIndex) {
+      case 0:
+        return const WeatherHome();
+      case 1:
+        return const NewsHome();
+      default:
+        return const WeatherHome();
+    }
   }
 }

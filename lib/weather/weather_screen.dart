@@ -1,6 +1,9 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, unnecessary_string_interpolations
 
+import 'package:aetram_task/drawer.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
@@ -26,37 +29,77 @@ class _WeatherScreenState extends State<WeatherScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Weather App',
-            style: GoogleFonts.lato(fontSize: 24, fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.deepPurple,
-        elevation: 0,
-      ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.deepPurple, Colors.blueAccent],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+    return LayoutBuilder(
+      builder: (context, sizeIs) {
+        return Scaffold(
+          drawer: sizeIs.maxWidth < ScreenSize.width ? AppDrawer(pagename: 'Weather') : null,
+          appBar: sizeIs.maxWidth < ScreenSize.width
+              ? AppBar(
+                  title: Text('Weather App',
+                      style: GoogleFonts.lato(
+                          fontSize: 24, fontWeight: FontWeight.bold)),
+                  backgroundColor: Colors.deepPurple,
+                  elevation: 0,
+                )
+              : null,
+          body: Row(
+            children: [
+              if (sizeIs.maxWidth > ScreenSize.width)
+                AppDrawer(
+                  pagename: 'Weather',
+                  colors: Colors.deepPurple,
+                ),
+              Expanded(
+                child: Column(
+                  children: [
+                    if (sizeIs.maxWidth > ScreenSize.width) ...[
+                      SizedBox(height: 10),
+                      Container(
+                        color: Colors.deepPurple,
+                        width: double.infinity,
+                        child: Text(
+                          textAlign: TextAlign.center,
+                          'Weather App',
+                          style: GoogleFonts.lato(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      )
+                    ],
+                    Expanded(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [Colors.deepPurple, Colors.blueAccent],
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                          ),
+                        ),
+                        child: Center(
+                          child: FutureBuilder<WeatherData>(
+                            future: futureWeatherData,
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                return buildWeatherInfo(snapshot.data!);
+                              } else if (snapshot.hasError) {
+                                return Text('${snapshot.error}',
+                                    style:
+                                        GoogleFonts.lato(color: Colors.white));
+                              }
+                              return CircularProgressIndicator();
+                            },
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
-        ),
-        child: Center(
-          child: FutureBuilder<WeatherData>(
-            future: futureWeatherData,
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return buildWeatherInfo(snapshot.data!);
-              } else if (snapshot.hasError) {
-                return Text('${snapshot.error}',
-                    style: GoogleFonts.lato(color: Colors.white));
-              }
-
-              return CircularProgressIndicator();
-            },
-          ),
-        ),
-      ),
+        );
+      },
     );
   }
 
@@ -112,9 +155,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
               ],
             ),
             SizedBox(height: 32),
-            if (data.forecast != null) ...[
-              buildForecast(data.forecast!),
-            ]
+            ForecastList()
           ],
         ),
       ),
@@ -137,6 +178,53 @@ class _WeatherScreenState extends State<WeatherScreen> {
       ],
     );
   }
+}
+
+class ForecastList extends StatefulWidget {
+  const ForecastList({super.key});
+
+  @override
+  State<ForecastList> createState() => _ForecastListState();
+}
+
+class _ForecastListState extends State<ForecastList> {
+  late Future<List<Forecast>?> forecast;
+
+  @override
+  void initState() {
+    forecast = WeatherApi().fetchForecastData(context);
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+        future: forecast,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return Column(
+              children: [
+                buildForecast(snapshot.data!),
+                SizedBox(
+                  height: 250,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (context, index) {
+                      return buildForecastItem(snapshot.data![index]);
+                    },
+                  ),
+                ),
+              ],
+            );
+          }
+          if (snapshot.hasError) {
+            return Text('Error : ${snapshot.error}');
+          } else {
+            return Center(child: CircularProgressIndicator());
+          }
+        });
+  }
 
   Widget buildForecast(List<Forecast> forecast) {
     return Column(
@@ -147,16 +235,6 @@ class _WeatherScreenState extends State<WeatherScreen> {
               fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
         ),
         SizedBox(height: 16),
-        SizedBox(
-          height: 200,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: forecast.length,
-            itemBuilder: (context, index) {
-              return buildForecastItem(forecast[index]);
-            },
-          ),
-        ),
       ],
     );
   }
@@ -164,6 +242,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
   Widget buildForecastItem(Forecast forecast) {
     DateTime date = DateTime.fromMillisecondsSinceEpoch(forecast.dt * 1000);
     String day = DateFormat('EEEE').format(date);
+    String time = DateFormat('HH:mm').format(date);
 
     return Container(
       margin: EdgeInsets.all(8.0),
@@ -176,9 +255,10 @@ class _WeatherScreenState extends State<WeatherScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Text(
-            day,
+            '$day\n$time',
             style: GoogleFonts.lato(
                 fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+            textAlign: TextAlign.center,
           ),
           SizedBox(height: 8),
           Image.network(
@@ -187,7 +267,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
           ),
           SizedBox(height: 8),
           Text(
-            '${forecast.main.temp}°C',
+            Temperature.convertTemperature(forecast.main.temp, 'celsius'),
             style: GoogleFonts.lato(fontSize: 18, color: Colors.white),
           ),
         ],

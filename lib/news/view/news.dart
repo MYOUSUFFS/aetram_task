@@ -1,3 +1,4 @@
+import 'package:aetram_task/drawer.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -72,124 +73,146 @@ class _NewsHomeState extends State<NewsHome> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('News Feeds'),
-        actions: [
-          TextButton.icon(
-            onPressed: () async {
-              await countryNameFind();
-            },
-            icon: const Icon(Icons.edit_location_alt),
-            label: Text(
-              countryName,
-              style: const TextStyle(overflow: TextOverflow.ellipsis),
-            ),
-          )
-        ],
-        centerTitle: true,
-      ),
-      body: Stack(
-        children: [
-          if (news != null) ...[
-            Column(
-              children: [
-                const SizedBox(height: 45, child: CategoryWidget()),
-                const Divider(),
-                Expanded(
-                  child: ListView.separated(
-                    separatorBuilder: (context, index) => Divider(
-                      color: Colors.grey[100],
-                    ),
-                    shrinkWrap: true,
-                    controller: controller,
-                    physics: const BouncingScrollPhysics(),
-                    itemCount: news!.articles?.length ?? 0,
-                    itemBuilder: (context, index) {
-                      if (news!.articles != null) {
-                        final article = news!.articles![index];
-                        return Card(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: ListTile(
-                            title: article.title != null
-                                ? Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      if (article.urlToImage is String) ...[
-                                        Image.network(article.urlToImage,
-                                            errorBuilder:
-                                                (context, error, stackTrace) =>
-                                                    const SizedBox()),
-                                      ],
-                                      Text(
-                                        article.title ?? '',
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ],
-                                  )
-                                : null,
-                            subtitle: article.description != null
-                                ? Text(
-                                    article.description ?? '',
-                                    style: TextStyle(
-                                      color: Colors.grey.shade300,
+    return LayoutBuilder(
+      builder: (context, sizeIs) {
+        return Scaffold(
+          drawer: sizeIs.maxWidth < ScreenSize.width
+              ? const AppDrawer(pagename: 'News')
+              : null,
+          appBar: AppBar(
+            title: const Text('News Feeds'),
+            actions: [
+              TextButton.icon(
+                onPressed: () async {
+                  await countryNameFind();
+                },
+                icon: const Icon(Icons.edit_location_alt),
+                label: Text(
+                  countryName,
+                  style: const TextStyle(overflow: TextOverflow.ellipsis),
+                ),
+              )
+            ],
+            centerTitle: true,
+          ),
+          body: Stack(
+            children: [
+              if (news != null) ...[
+                Row(
+                  children: [
+                    if (sizeIs.maxWidth > ScreenSize.width)
+                      const AppDrawer(pagename: 'News'),
+                    Expanded(
+                      child: Column(
+                        children: [
+                          const SizedBox(height: 45, child: CategoryWidget()),
+                          const Divider(),
+                          Expanded(
+                            child: ListView.separated(
+                              separatorBuilder: (context, index) => Divider(
+                                color: Colors.grey[100],
+                              ),
+                              shrinkWrap: true,
+                              controller: controller,
+                              physics: const BouncingScrollPhysics(),
+                              itemCount: news!.articles?.length ?? 0,
+                              itemBuilder: (context, index) {
+                                if (news!.articles != null) {
+                                  final article = news!.articles![index];
+                                  return Card(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
                                     ),
-                                  )
-                                : null,
-                            onTap: () async {
-                              if (article.url != null) {
-                                if (kIsWeb) {
-                                  try {
-                                    if (!await canLaunchUrl(
-                                        Uri.parse(article.url!))) {
-                                      throw Exception(
-                                          'Could not launch ${article.url}');
-                                    }
-                                    await launchUrl(
-                                      Uri.parse(article.url!),
-                                      webOnlyWindowName: '_self',
-                                    );
-                                  } catch (e) {
-                                    debugPrint(e.toString());
-                                  }
-                                } else {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) {
-                                        return WebViewNews(
-                                          url: article.url!,
-                                        );
+                                    child: ListTile(
+                                      title: article.title != null
+                                          ? Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                if (article.urlToImage
+                                                    is String) ...[
+                                                  Image.network(
+                                                      article.urlToImage,
+                                                      errorBuilder: (context,
+                                                              error,
+                                                              stackTrace) =>
+                                                          const SizedBox()),
+                                                ],
+                                                Text(
+                                                  article.title ?? '',
+                                                  style: const TextStyle(
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ],
+                                            )
+                                          : null,
+                                      subtitle: article.description != null
+                                          ? Text(
+                                              article.description ?? '',
+                                              style: TextStyle(
+                                                color: Colors.grey.shade300,
+                                              ),
+                                            )
+                                          : null,
+                                      onTap: () async {
+                                        if (article.url != null) {
+                                          if (kIsWeb) {
+                                            try {
+                                              if (!await canLaunchUrl(
+                                                  Uri.parse(article.url!))) {
+                                                throw Exception(
+                                                    'Could not launch ${article.url}');
+                                              }
+                                              await launchUrl(
+                                                Uri.parse(article.url!),
+                                                webOnlyWindowName: '_self',
+                                              );
+                                            } catch (e) {
+                                              debugPrint(e.toString());
+                                            }
+                                          } else {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) {
+                                                  return WebViewNews(
+                                                    url: article.url!,
+                                                  );
+                                                },
+                                              ),
+                                            );
+                                          }
+                                        } else {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(const SnackBar(
+                                                  content:
+                                                      Text('No URL found')));
+                                        }
                                       },
                                     ),
                                   );
+                                } else {
+                                  return const Center(
+                                      child: Text('article error'));
                                 }
-                              } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                        content: Text('No URL found')));
-                              }
-                            },
+                              },
+                            ),
                           ),
-                        );
-                      } else {
-                        return const Center(child: Text('article error'));
-                      }
-                    },
-                  ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          ] else ...[
-            const Center(child: CircularProgressIndicator())
-          ]
-        ],
-      ),
+              ] else ...[
+                const Center(child: CircularProgressIndicator())
+              ]
+            ],
+          ),
+        );
+      },
     );
   }
 }
