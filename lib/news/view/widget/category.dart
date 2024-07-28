@@ -33,7 +33,8 @@ class _CategoryWidgetState extends State<CategoryWidget> {
           margin: const EdgeInsets.all(5),
           padding: const EdgeInsets.all(5),
           decoration: BoxDecoration(
-            color: StaticData.category[index] == news.category
+            color: StaticData.category[index] == news.category ||
+                    (index == 0 && news.category == null)
                 ? Colors.green[800]
                 : null,
             border: Border.all(),

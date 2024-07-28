@@ -117,9 +117,13 @@ class _NewsListState extends State<NewsList> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       if (widget.temperature) {
         final String news = widget.news ?? '';
-        await newsTempProvider.newsApiCall(news);
+        if (newsTempProvider.news == null) {
+          await newsTempProvider.newsApiCall(news);
+        }
       } else {
-        await newsProvider.newsApiCall();
+        if (newsProvider.news == null) {
+          await newsProvider.newsApiCall();
+        }
       }
       controller.addListener(() {
         if (controller.position.pixels == controller.position.maxScrollExtent) {
