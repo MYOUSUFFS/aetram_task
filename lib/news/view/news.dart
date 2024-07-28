@@ -1,12 +1,13 @@
-import 'package:aetram_task/drawer.dart';
-import 'package:aetram_task/news/view/utils/utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
+import '../../drawer.dart';
+import '../controller/provider.dart';
 import '../model/news.dart';
-import '../controller/api.dart';
+import 'utils/utils.dart';
 import 'widget/category.dart';
 import 'widget/selected_country.dart';
 
@@ -18,28 +19,29 @@ class NewsHome extends StatefulWidget {
 }
 
 class _NewsHomeState extends State<NewsHome> {
-  NewsModel? news;
-  String country = 'in';
+  late NewsProvider newsProvider;
   String countryName = 'India';
-  bool isLoading = false;
-  int page = 1;
-  final int pageSize = 15;
   String? category;
 
   countryNameFind() async {
     final data = await SelectedCountry(context: context).showListOfCountry();
     if (data != null) {
-      country = data['country_code'];
       countryName = data['country_name'];
-      page = 1;
-      news = null;
-      // await _fetchUsers();
+      await newsProvider.newsCountry(data['country_code']);
     }
     setState(() {});
   }
 
   @override
+  void initState() {
+    newsProvider = Provider.of<NewsProvider>(context, listen: false);
+
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    newsProvider = Provider.of<NewsProvider>(context);
     return LayoutBuilder(
       builder: (context, sizeIs) {
         return Scaffold(
@@ -68,17 +70,12 @@ class _NewsHomeState extends State<NewsHome> {
                 children: [
                   if (sizeIs.maxWidth > ScreenSize.tab)
                     const AppDrawer(pagename: 'News'),
-                  Expanded(
+                  const Expanded(
                     child: Column(
                       children: [
-                        const SizedBox(height: 45, child: CategoryWidget()),
-                        const Divider(),
-                        Expanded(
-                          child: NewsList(
-                            category: category,
-                            country: country,
-                          ),
-                        ),
+                        SizedBox(height: 45, child: CategoryWidget()),
+                        Divider(),
+                        Expanded(child: NewsList())
                       ],
                     ),
                   ),
@@ -97,34 +94,43 @@ class NewsList extends StatefulWidget {
     super.key,
     this.temperature = false,
     this.news,
-    this.country,
-    this.category,
   });
   final bool temperature;
   final String? news;
-  final String? country;
-  final String? category;
 
   @override
   State<NewsList> createState() => _NewsListState();
 }
 
 class _NewsListState extends State<NewsList> {
+  late NewsTempProvider newsTempProvider;
+  late NewsProvider newsProvider;
   final ScrollController controller = ScrollController();
   NewsModel? news;
-  bool isLoading = false;
-  int page = 1;
   final int pageSize = 15;
 
   @override
   void initState() {
     super.initState();
-    controller.addListener(() {
-      if (controller.position.pixels == controller.position.maxScrollExtent) {
-        _fetchMoreUsers();
+    newsTempProvider = Provider.of<NewsTempProvider>(context, listen: false);
+    newsProvider = Provider.of<NewsProvider>(context, listen: false);
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      if (widget.temperature) {
+        final String news = widget.news ?? '';
+        await newsTempProvider.newsApiCall(news);
+      } else {
+        await newsProvider.newsApiCall();
       }
+      controller.addListener(() {
+        if (controller.position.pixels == controller.position.maxScrollExtent) {
+          if (widget.temperature) {
+            newsTempProvider.newsFetchMore(widget.news!);
+          } else {
+            newsProvider.newsFetchMore();
+          }
+        }
+      });
     });
-    _fetchUsers();
   }
 
   @override
@@ -133,50 +139,14 @@ class _NewsListState extends State<NewsList> {
     super.dispose();
   }
 
-  Future<void> _fetchUsers() async {
-    setState(() {
-      isLoading = true;
-    });
-    final String? country = widget.country;
-    final String? category = widget.category;
-    NewsModel? data;
-    if (country != null) {
-      data = await NewsApi().newsApi(
-        country,
-        page,
-        pageSize,
-        category,
-        temperature: widget.temperature,
-      );
-    } else {
-      data = await NewsApi().newsApi(
-        country,
-        page,
-        pageSize,
-        category,
-        temperature: widget.temperature,
-        news: widget.news,
-      );
-    }
-    if (news == null) {
-      news = data;
-    } else {
-      news!.articles!.addAll(data!.articles!);
-    }
-    setState(() {
-      isLoading = false;
-    });
-  }
-
-  void _fetchMoreUsers() {
-    if (!isLoading) {
-      page++;
-      _fetchUsers();
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+    newsProvider = Provider.of<NewsProvider>(context);
+    if (widget.temperature) {
+      news = newsTempProvider.news;
+    } else {
+      news = newsProvider.news;
+    }
     if (news != null) {
       return Container(
         constraints: BoxConstraints(maxWidth: ScreenSize.mobile),

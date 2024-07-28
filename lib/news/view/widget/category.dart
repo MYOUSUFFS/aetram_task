@@ -1,5 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:aetram_task/news/controller/provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../utils/static.dart';
 
@@ -11,10 +13,9 @@ class CategoryWidget extends StatefulWidget {
 }
 
 class _CategoryWidgetState extends State<CategoryWidget> {
-  String? category;
-
   @override
   Widget build(BuildContext context) {
+    final news = Provider.of<NewsProvider>(context);
     return ListView.builder(
       shrinkWrap: true,
       scrollDirection: Axis.horizontal,
@@ -22,9 +23,9 @@ class _CategoryWidgetState extends State<CategoryWidget> {
       itemBuilder: (context, index) => InkWell(
         onTap: () {
           if (index != 0) {
-            category = StaticData.category[index];
+            news.changeCategory(StaticData.category[index]);
           } else {
-            category = null;
+            news.changeCategory(null);
           }
           setState(() {});
         },
@@ -32,7 +33,7 @@ class _CategoryWidgetState extends State<CategoryWidget> {
           margin: const EdgeInsets.all(5),
           padding: const EdgeInsets.all(5),
           decoration: BoxDecoration(
-            color: StaticData.category[index] == category
+            color: StaticData.category[index] == news.category
                 ? Colors.green[800]
                 : null,
             border: Border.all(),

@@ -23,7 +23,8 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => ScreenProvider()),
         ChangeNotifierProvider(create: (_) => WeatherProvider()),
-        ChangeNotifierProvider(create: (_) => NewsProvider())
+        ChangeNotifierProvider(create: (_) => NewsProvider()),
+        ChangeNotifierProvider(create: (_) => NewsTempProvider())
       ],
       child: MaterialApp(
         title: 'Weather & News',

@@ -54,8 +54,9 @@ class _WeatherScreenState extends State<WeatherScreen> {
     futureWeatherData = weather.futureWeatherData;
     if (weather.currentTemp != null) {
       newsHead = Temperature.tempNews(weather.currentTemp!);
+    } else {
+      newsHead = Temperature.tempNews(30);
     }
-
     return LayoutBuilder(
       builder: (context, sizeIs) {
         return Scaffold(
@@ -153,19 +154,38 @@ class _WeatherScreenState extends State<WeatherScreen> {
                 ),
               ),
               if (sizeIs.maxWidth > ScreenSize.tab) ...[
-                const Expanded(
+                Expanded(
                     child: Column(
                   children: [
-                    Text(
-                      'Temperature News',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        fontSize: 24,
-                      ),
+                    Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        const Text(
+                          'Temperature News',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            fontSize: 24,
+                          ),
+                        ),
+                        if (newsHead != null)
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Colors.white),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Text('$newsHead'),
+                            ),
+                          )
+                      ],
                     ),
-                    Divider(),
-                    Expanded(child: NewsList(temperature: true)),
+                    const Divider(),
+                    Expanded(
+                      child: NewsList(temperature: true, news: newsHead),
+                    ),
                   ],
                 ))
               ]
