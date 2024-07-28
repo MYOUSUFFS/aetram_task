@@ -7,9 +7,9 @@ import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
-import 'controller/api.dart';
-import 'model/weather.dart';
-import 'utils/temperature.dart';
+import '../controller/api.dart';
+import '../model/weather.dart';
+import '../controller/utils/temperature.dart';
 
 class WeatherScreen extends StatefulWidget {
   const WeatherScreen({super.key});

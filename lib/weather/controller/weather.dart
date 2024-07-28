@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 
-import '../utils/location_permission.dart';
+import 'utils/location_permission.dart';
 
 class WeatherProvider extends ChangeNotifier {
   bool _isLoading = false;

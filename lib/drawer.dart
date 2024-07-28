@@ -1,5 +1,5 @@
 import 'package:aetram_task/news/view/news.dart';
-import 'package:aetram_task/weather/weather.dart';
+import 'package:aetram_task/weather/view/weather.dart';
 import 'package:flutter/material.dart';
 
 class ScreenSize {

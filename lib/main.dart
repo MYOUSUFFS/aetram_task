@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 
 import 'news/view/news.dart';
 import 'weather/controller/weather.dart';
-import 'weather/weather.dart';
+import 'weather/view/weather.dart';
 
 void main() {
   runApp(const MyApp());

@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
 import '../model/weather.dart';
-import '../utils/static_data.dart';
+import 'utils/static_data.dart';
 import 'weather.dart';
 
 class WeatherApi {
