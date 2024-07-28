@@ -1,7 +1,10 @@
+// ignore_for_file: avoid_print
+
 import 'package:aetram_task/news/controller/provider.dart';
 import 'package:aetram_task/setting/provider.dart';
 import 'package:aetram_task/setting/setting.dart';
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
 import 'news/view/news.dart';
@@ -52,31 +55,92 @@ class Screen extends StatefulWidget {
 class _ScreenState extends State<Screen> {
   late WeatherProvider weather;
   late ScreenProvider screen;
+  bool permissionIs = false;
 
   @override
   void initState() {
     weather = Provider.of<WeatherProvider>(context, listen: false);
     screen = Provider.of<ScreenProvider>(context, listen: false);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      await weather.futureWeatherDataFn(context);
-      weather.temp = SharedPreferencesService.getTemp();
+      await startApp();
     });
     super.initState();
+  }
+
+  Future<bool> _getLocation() async {
+    var status = await Permission.location.request();
+    if (status == PermissionStatus.granted) {
+      permissionIs = true;
+      setState(() {});
+      return true;
+    } else {
+      permissionIs = false;
+      setState(() {});
+      return false;
+    }
+  }
+
+  Future startApp() async {
+    await _getLocation().then((value) async {
+      if (value) {
+        await weather.futureWeatherDataFn(context);
+        weather.temp = SharedPreferencesService.getTemp();
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     screen = Provider.of<ScreenProvider>(context);
     weather = Provider.of<WeatherProvider>(context);
-    switch (screen.screenIndex) {
-      case 0:
-        return const WeatherHome();
-      case 1:
-        return const NewsHome();
-      case 2:
-        return SettingScreen();
-      default:
-        return const WeatherHome();
+    if (permissionIs) {
+      switch (screen.screenIndex) {
+        case 0:
+          return const WeatherHome();
+        case 1:
+          return const NewsHome();
+        case 2:
+          return SettingScreen();
+        default:
+          return const PermissionHandlUi();
+      }
+    } else {
+      return const PermissionHandlUi();
     }
+  }
+}
+
+class PermissionHandlUi extends StatefulWidget {
+  const PermissionHandlUi({super.key});
+
+  @override
+  State<PermissionHandlUi> createState() => _PermissionHandlUiState();
+}
+
+class _PermissionHandlUiState extends State<PermissionHandlUi> {
+  bool loadingTime = true;
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      await Future.delayed(const Duration(seconds: 5), () {
+        loadingTime = false;
+        if (mounted) {
+          setState(() {});
+        }
+      });
+    });
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (loadingTime) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+    return const Scaffold(
+      body:
+          Center(child: Text('Need loaction permisstion for view temperature')),
+    );
   }
 }

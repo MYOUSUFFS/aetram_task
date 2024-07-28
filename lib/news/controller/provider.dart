@@ -67,16 +67,17 @@ class NewsTempProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  NewsModel? news;
+  NewsModel? _news;
+  NewsModel? get news => _news;
   int page = 1;
   final int pageSize = 15;
   String? category;
   String? country;
-  
-  hotNews(String newsTitle) {
+
+  hotNews(String newsTitle) async {
     page = 1;
-    news = null;
-    newsApiCall(newsTitle);
+    _news = null;
+    await newsApiCall(newsTitle);
   }
 
   newsApiCall(String newsTitle) async {
@@ -90,10 +91,10 @@ class NewsTempProvider extends ChangeNotifier {
         temperature: true,
         news: newsTitle,
       );
-      if (news == null) {
-        news = data;
+      if (_news == null) {
+        _news = data;
       } else {
-        news!.articles!.addAll(data!.articles!);
+        _news!.articles!.addAll(data!.articles!);
       }
     } catch (e) {
       debugPrint(e.toString());

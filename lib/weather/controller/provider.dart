@@ -31,7 +31,7 @@ class WeatherProvider extends ChangeNotifier {
       _futureWeatherData = value;
       _currentTemp = value.main.temp;
       final modeOf = Temperature.tempNews(_currentTemp!);
-      newsTemp.hotNews(modeOf);
+      await newsTemp.hotNews(modeOf);
       loadChange(false);
       notifyListeners();
     }

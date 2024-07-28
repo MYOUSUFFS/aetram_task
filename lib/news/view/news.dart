@@ -115,16 +115,17 @@ class _NewsListState extends State<NewsList> {
     newsTempProvider = Provider.of<NewsTempProvider>(context, listen: false);
     newsProvider = Provider.of<NewsProvider>(context, listen: false);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      if (widget.temperature) {
-        final String news = widget.news ?? '';
-        if (newsTempProvider.news == null) {
-          await newsTempProvider.newsApiCall(news);
-        }
-      } else {
+      if (!widget.temperature) {
         if (newsProvider.news == null) {
           await newsProvider.newsApiCall();
         }
       }
+      // Todo :- This is for get api call without pre init app.
+      // else {
+      //   if (newsTempProvider.news == null) {
+      //     print('get All ready');
+      //   }
+      // }
       controller.addListener(() {
         if (controller.position.pixels == controller.position.maxScrollExtent) {
           if (widget.temperature) {
