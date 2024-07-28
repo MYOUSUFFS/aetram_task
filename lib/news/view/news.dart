@@ -7,12 +7,11 @@ import 'package:webview_flutter/webview_flutter.dart';
 
 import '../model/news.dart';
 import '../controller/api.dart';
-import 'category.dart';
+import 'widget/category.dart';
 import 'widget/selected_country.dart';
 
 class NewsHome extends StatefulWidget {
-  const NewsHome({super.key, this.temperature = true});
-  final bool temperature;
+  const NewsHome({super.key});
 
   @override
   State<NewsHome> createState() => _NewsHomeState();
@@ -22,7 +21,6 @@ class _NewsHomeState extends State<NewsHome> {
   NewsModel? news;
   String country = 'in';
   String countryName = 'India';
-  final ScrollController controller = ScrollController();
   bool isLoading = false;
   int page = 1;
   final int pageSize = 15;
@@ -95,9 +93,15 @@ class _NewsHomeState extends State<NewsHome> {
 }
 
 class NewsList extends StatefulWidget {
-  const NewsList(
-      {super.key, this.temperature = false, this.country, this.category});
+  const NewsList({
+    super.key,
+    this.temperature = false,
+    this.news,
+    this.country,
+    this.category,
+  });
   final bool temperature;
+  final String? news;
   final String? country;
   final String? category;
 
@@ -123,6 +127,12 @@ class _NewsListState extends State<NewsList> {
     _fetchUsers();
   }
 
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
   Future<void> _fetchUsers() async {
     setState(() {
       isLoading = true;
@@ -140,11 +150,12 @@ class _NewsListState extends State<NewsList> {
       );
     } else {
       data = await NewsApi().newsApi(
-        'in',
+        country,
         page,
         pageSize,
         category,
         temperature: widget.temperature,
+        news: widget.news,
       );
     }
     if (news == null) {

@@ -1,5 +1,5 @@
 class StaticData {
-  static const String apiKey = '027ba9368eb6479820e96dc6c8a3d23';
+  static const String apiKey = '1e03141df3a4422caa0f70a6be8b178e';
   static const List<String> category = [
     'all',
     "business",
@@ -11,7 +11,6 @@ class StaticData {
     "technology",
   ];
   static const List<Map<String, String>> country = [
-    {"country_code": "ae", "country_name": "United Arab Emirates"},
     {"country_code": "ar", "country_name": "Argentina"},
     {"country_code": "at", "country_name": "Austria"},
     {"country_code": "au", "country_name": "Australia"},
@@ -60,6 +59,7 @@ class StaticData {
     {"country_code": "ua", "country_name": "Ukraine"},
     {"country_code": "us", "country_name": "United States"},
     {"country_code": "ve", "country_name": "Venezuela"},
-    {"country_code": "za", "country_name": "South Africa"}
+    {"country_code": "za", "country_name": "South Africa"},
+    {"country_code": "ae", "country_name": "United Arab Emirates"},
   ];
 }

@@ -1,4 +1,5 @@
 import 'package:aetram_task/news/view/news.dart';
+import 'package:aetram_task/setting.dart';
 import 'package:aetram_task/weather/view/weather.dart';
 import 'package:flutter/material.dart';
 
@@ -37,6 +38,13 @@ class AppDrawer extends StatelessWidget {
               title: const Text('News'),
               onTap: () {
                 push(context, const NewsHome());
+              },
+            ),
+          if (pagename != 'Setting')
+            ListTile(
+              title: const Text('Setting'),
+              onTap: () {
+                push(context, SettingScreen());
               },
             ),
         ],

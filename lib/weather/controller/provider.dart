@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 
+import '../model/weather.dart';
+import 'api.dart';
 import 'utils/location_permission.dart';
 
 class WeatherProvider extends ChangeNotifier {
@@ -12,19 +14,36 @@ class WeatherProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  String _temp = '';
+  WeatherData? _futureWeatherData;
+  WeatherData? get futureWeatherData => _futureWeatherData;
+
+  futureWeatherDataFn(
+    BuildContext context,
+  ) async {
+    loadChange(true);
+    WeatherData? value = await WeatherApi().fetchWeatherData(context);
+    _futureWeatherData = value;
+    _currentTemp = value.main.temp;
+    loadChange(false);
+    notifyListeners();
+  }
+
+  double? _currentTemp;
+  double? get currentTemp => _currentTemp;
+
+  String _temp = 'celsius';
   String get temp => _temp;
 
-  set tempFn(String value) {
+  tempFn(String value) {
     _temp = value;
     notifyListeners();
   }
 
-  double _lat = 0.0;
-  double get lat => _lat;
+  double? _lat;
+  double? get lat => _lat;
 
-  double _lon = 0.0;
-  double get lon => _lon;
+  double? _lon;
+  double? get lon => _lon;
 
   Future<Position> setLatLog() async {
     loadChange(true);

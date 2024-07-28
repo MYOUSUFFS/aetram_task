@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_print
-
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -17,8 +15,10 @@ class WeatherApi {
   Future<WeatherData> fetchWeatherData(BuildContext context) async {
     final weather = Provider.of<WeatherProvider>(context, listen: false);
 
+    final position = await weather.setLatLog();
+
     final response = await http.get(Uri.parse(
-        "$apiUrl${apiVersion}weather?lat=${weather.lat}&lon=${weather.lon}&apiKey=${WeatherStaticData.apiKey}"));
+        "$apiUrl${apiVersion}weather?lat=${position.latitude}&lon=${position.longitude}&apiKey=${WeatherStaticData.apiKey}"));
 
     if (response.statusCode == 200) {
       return WeatherData.fromJson(jsonDecode(response.body));
@@ -42,22 +42,22 @@ class WeatherApi {
     }
   }
 
-  Future<dynamic> weatherApi(BuildContext context) async {
-    final weather = Provider.of<WeatherProvider>(context, listen: false);
-    try {
-      final position = await weather.setLatLog();
-      String url =
-          "$apiUrl${apiVersion}weather?lat=${position.latitude}&lon=${position.latitude}&apiKey=${WeatherStaticData.apiKey}";
-      final response = await http.get(Uri.parse(url));
-      if (response.statusCode == 200) {
-        final jsonData = jsonDecode(response.body);
-        return jsonData;
-      } else {
-        throw Exception('Failed to load users');
-      }
-    } catch (e) {
-      print(e);
-      return null;
-    }
-  }
+  // Future<dynamic> weatherApi(BuildContext context) async {
+  //   final weather = Provider.of<WeatherProvider>(context, listen: false);
+  //   try {
+  //     final position = await weather.setLatLog();
+  //     String url =
+  //         "$apiUrl${apiVersion}weather?lat=${position.latitude}&lon=${position.latitude}&apiKey=${WeatherStaticData.apiKey}";
+  //     final response = await http.get(Uri.parse(url));
+  //     if (response.statusCode == 200) {
+  //       final jsonData = jsonDecode(response.body);
+  //       return jsonData;
+  //     } else {
+  //       throw Exception('Failed to load users');
+  //     }
+  //   } catch (e) {
+  //     print(e);
+  //     return null;
+  //   }
+  // }
 }

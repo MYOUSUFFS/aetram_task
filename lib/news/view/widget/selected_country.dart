@@ -1,4 +1,4 @@
-import 'package:aetram_task/news/view/static.dart';
+import 'package:aetram_task/news/view/utils/static.dart';
 import 'package:flutter/material.dart';
 
 class SelectedCountry {
