@@ -9,28 +9,20 @@ class NewsApi {
   String apiUrl = "https://newsapi.org/";
   String apiVersion = "v2/";
 
-  Future<NewsModel?> topHeadingApi() async {
+  Future<NewsModel?> newsApi(
+      String country, int page, int pageSize, String? category,
+      {required bool temperature}) async {
     try {
-      String url =
-          "$apiUrl${apiVersion}top-headlines?country=in&apiKey=${StaticData.apiKey}";
-      final response = await http.get(Uri.parse(url));
-      if (response.statusCode == 200) {
-        return newsModelFromJson(response.body);
+      String url = '';
+      if (!temperature) {
+        url = category != null
+            ? "$apiUrl${apiVersion}top-headlines?country=$country&category=$category&page=$page&pageSize=$pageSize&apiKey=${StaticData.apiKey}"
+            : "$apiUrl${apiVersion}top-headlines?country=$country&page=$page&pageSize=$pageSize&apiKey=${StaticData.apiKey}";
       } else {
-        throw Exception('Failed to load users');
+        String q = "happiness";
+        url =
+            "$apiUrl${apiVersion}everything?q=$q&page=$page&pageSize=$pageSize&apiKey=${StaticData.apiKey}";
       }
-    } catch (e) {
-      print(e);
-      return null;
-    }
-  }
-
-  Future<NewsModel?> fetchUsers(
-      String country, int page, int pageSize, String? category) async {
-    try {
-      String url = category != null
-          ? "$apiUrl${apiVersion}top-headlines?country=$country&category=$category&page=$page&pageSize=$pageSize&apiKey=${StaticData.apiKey}"
-          : "$apiUrl${apiVersion}top-headlines?country=$country&page=$page&pageSize=$pageSize&apiKey=${StaticData.apiKey}";
       final response = await http.get(Uri.parse(url));
       print(response.statusCode);
       if (response.statusCode == 200) {

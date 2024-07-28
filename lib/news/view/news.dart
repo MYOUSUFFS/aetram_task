@@ -10,7 +10,8 @@ import 'category.dart';
 import 'widget/selected_country.dart';
 
 class NewsHome extends StatefulWidget {
-  const NewsHome({super.key});
+  const NewsHome({super.key, this.temperature = true});
+  final bool temperature;
 
   @override
   State<NewsHome> createState() => _NewsHomeState();
@@ -53,7 +54,13 @@ class _NewsHomeState extends State<NewsHome> {
     setState(() {
       isLoading = true;
     });
-    final data = await NewsApi().fetchUsers(country, page, pageSize, category);
+    final data = await NewsApi().newsApi(
+      country,
+      page,
+      pageSize,
+      category,
+      temperature: widget.temperature,
+    );
     if (news == null) {
       news = data;
     } else {
