@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 
+import '../../setting/local.dart';
 import '../model/news.dart';
 import 'api.dart';
 
@@ -15,7 +16,15 @@ class NewsProvider extends ChangeNotifier {
   NewsModel? news;
   int page = 1;
   final int pageSize = 15;
-  String? category;
+  String? _category;
+  String? get category => _category;
+
+  set category(String? value) {
+    SharedPreferencesService.setCategory(value);
+    _category = category;
+    notifyListeners();
+  }
+
   String country = 'in';
 
   newsApiCall() async {
@@ -44,14 +53,14 @@ class NewsProvider extends ChangeNotifier {
   }
 
   changeCategory(String? data) async {
-    category = data;
+    _category = data;
     page = 1;
     news = null;
     await newsApiCall();
   }
 
   newsCountry(String countryIs) async {
-    country = countryIs;
+    _category = countryIs;
     page = 1;
     news = null;
     await newsApiCall();

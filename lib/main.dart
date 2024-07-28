@@ -4,10 +4,12 @@ import 'package:aetram_task/news/controller/provider.dart';
 import 'package:aetram_task/setting/provider.dart';
 import 'package:aetram_task/setting/setting.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
 import 'news/view/news.dart';
+import 'news/view/utils/utils.dart';
 import 'setting/local.dart';
 import 'weather/controller/provider.dart';
 import 'weather/view/weather.dart';
@@ -55,29 +57,18 @@ class Screen extends StatefulWidget {
 class _ScreenState extends State<Screen> {
   late WeatherProvider weather;
   late ScreenProvider screen;
+  late NewsProvider newsProvider;
   bool permissionIs = false;
 
   @override
   void initState() {
     weather = Provider.of<WeatherProvider>(context, listen: false);
     screen = Provider.of<ScreenProvider>(context, listen: false);
+    newsProvider = Provider.of<NewsProvider>(context, listen: false);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       await startApp();
     });
     super.initState();
-  }
-
-  Future<bool> _getLocation() async {
-    var status = await Permission.location.request();
-    if (status == PermissionStatus.granted) {
-      permissionIs = true;
-      setState(() {});
-      return true;
-    } else {
-      permissionIs = false;
-      setState(() {});
-      return false;
-    }
   }
 
   Future startApp() async {
@@ -85,14 +76,43 @@ class _ScreenState extends State<Screen> {
       if (value) {
         await weather.futureWeatherDataFn(context);
         weather.temp = SharedPreferencesService.getTemp();
+        newsProvider.category = SharedPreferencesService.getCategory();
+        screen.locationStatus = value;
       }
     });
+  }
+
+  Future<bool> _getLocation() async {
+    var status = await Permission.location.request();
+    bool serviceEnabled = await _location();
+    if (status == PermissionStatus.granted && serviceEnabled) {
+      permissionIs = true;
+      setState(() {});
+      return permissionIs;
+    } else {
+      permissionIs = false;
+      setState(() {});
+      return permissionIs;
+    }
+  }
+
+  Future<bool> _location() async {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    print(serviceEnabled);
+    if (!serviceEnabled) {
+      final open = await Geolocator.openLocationSettings();
+      print(open);
+      return open;
+    } else {
+      return true;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     screen = Provider.of<ScreenProvider>(context);
     weather = Provider.of<WeatherProvider>(context);
+    newsProvider = Provider.of<NewsProvider>(context);
     if (permissionIs) {
       switch (screen.screenIndex) {
         case 0:
@@ -138,9 +158,23 @@ class _PermissionHandlUiState extends State<PermissionHandlUi> {
     if (loadingTime) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
-    return const Scaffold(
-      body:
-          Center(child: Text('Need loaction permisstion for view temperature')),
+    return Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text(
+              '* Ensure your location is turned on.\n* Please enable location permissions to view the temperature',
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+                onPressed: () {
+                  Tools.push(context, const NewsHome());
+                },
+                child: const Text('Without access'))
+          ],
+        ),
+      ),
     );
   }
 }
