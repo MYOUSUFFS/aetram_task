@@ -1,9 +1,10 @@
+import 'package:aetram_task/news/controller/provider.dart';
 import 'package:aetram_task/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'news/view/news.dart';
-import 'weather/controller/weather.dart';
+import 'weather/controller/provider.dart';
 import 'weather/view/weather.dart';
 
 void main() {
@@ -21,6 +22,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => ScreenProvider()),
         ChangeNotifierProvider(create: (_) => WeatherProvider()),
+        ChangeNotifierProvider(create: (_) => NewsProvider())
       ],
       child: MaterialApp(
         title: 'Weather & News',

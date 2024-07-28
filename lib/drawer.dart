@@ -3,7 +3,9 @@ import 'package:aetram_task/weather/view/weather.dart';
 import 'package:flutter/material.dart';
 
 class ScreenSize {
-  static double width = 900;
+  static double mobile = 600;
+  static double tab = 900;
+  static double web = 1200;
 }
 
 class AppDrawer extends StatelessWidget {

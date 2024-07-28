@@ -8,10 +8,11 @@ class SelectedCountry {
   Future<Map<String, dynamic>?> showListOfCountry() async {
     final Map<String, dynamic>? data = await showDialog(
       context: context,
-      builder: (context) => Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Scaffold(
-          body: ListView.builder(
+      builder: (context) => Dialog(
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 600),
+          padding: const EdgeInsets.all(16.0),
+          child: ListView.builder(
             itemBuilder: (context, index) => ListTile(
               title: Text(StaticData.country[index]['country_name'].toString()),
               trailing: Text('(${StaticData.country[index]['country_code']})'),

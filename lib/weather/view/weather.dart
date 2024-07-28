@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../controller/api.dart';
-import '../controller/weather.dart';
+import '../controller/provider.dart';
 import 'weather_screen.dart';
 
 class WeatherHome extends StatefulWidget {

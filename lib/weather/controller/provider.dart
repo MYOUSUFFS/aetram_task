@@ -12,6 +12,14 @@ class WeatherProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  String _temp = '';
+  String get temp => _temp;
+
+  set tempFn(String value) {
+    _temp = value;
+    notifyListeners();
+  }
+
   double _lat = 0.0;
   double get lat => _lat;
 

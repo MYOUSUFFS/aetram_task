@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 
 import '../model/weather.dart';
 import 'utils/static_data.dart';
-import 'weather.dart';
+import 'provider.dart';
 
 class WeatherApi {
   String apiUrl = "https://api.openweathermap.org/data/";

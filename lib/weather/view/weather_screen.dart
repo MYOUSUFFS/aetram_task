@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, unnecessary_string_interpolations
 
 import 'package:aetram_task/drawer.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:aetram_task/news/view/news.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -32,19 +32,25 @@ class _WeatherScreenState extends State<WeatherScreen> {
     return LayoutBuilder(
       builder: (context, sizeIs) {
         return Scaffold(
-          drawer: sizeIs.maxWidth < ScreenSize.width ? AppDrawer(pagename: 'Weather') : null,
-          appBar: sizeIs.maxWidth < ScreenSize.width
+          drawer: sizeIs.maxWidth < ScreenSize.web
+              ? AppDrawer(pagename: 'Weather')
+              : null,
+          appBar: sizeIs.maxWidth < ScreenSize.web
               ? AppBar(
-                  title: Text('Weather App',
-                      style: GoogleFonts.lato(
-                          fontSize: 24, fontWeight: FontWeight.bold)),
+                  title: Text(
+                    'Weather App',
+                    style: GoogleFonts.lato(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                   backgroundColor: Colors.deepPurple,
                   elevation: 0,
                 )
               : null,
           body: Row(
             children: [
-              if (sizeIs.maxWidth > ScreenSize.width)
+              if (sizeIs.maxWidth > ScreenSize.web)
                 AppDrawer(
                   pagename: 'Weather',
                   colors: Colors.deepPurple,
@@ -52,7 +58,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
               Expanded(
                 child: Column(
                   children: [
-                    if (sizeIs.maxWidth > ScreenSize.width) ...[
+                    if (sizeIs.maxWidth > ScreenSize.tab) ...[
                       SizedBox(height: 10),
                       Container(
                         color: Colors.deepPurple,
@@ -96,6 +102,23 @@ class _WeatherScreenState extends State<WeatherScreen> {
                   ],
                 ),
               ),
+              if (sizeIs.maxWidth > ScreenSize.tab) ...[
+                Expanded(
+                    child: Column(
+                  children: [
+                    Text(
+                      'Temperature News',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        fontSize: 24,
+                      ),
+                    ),
+                    Divider(),
+                    Expanded(child: NewsList(temperature: true)),
+                  ],
+                ))
+              ]
             ],
           ),
         );
