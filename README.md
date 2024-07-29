@@ -49,17 +49,17 @@
 #### Web Max ~ 1200
 > Weather
 
-![]('assets/readme/Screenshot 2024-07-29 at 5.15.44 AM.png')
+![](assets/readme/Screenshot_2024-07-29_at_5.15.44_AM.png)
 
 > News 
 
-![]('assets/readme/Screenshot 2024-07-29 at 5.16.41 AM.png')
+![](assets/readme/Screenshot_2024-07-29_at_5.16.41_AM.png)
 
 #### Medium ~ 900
 > Weather
 
-![]('assets/readme/Screenshot 2024-07-29 at 5.16.04 AM.png')
+![](assets/readme/Screenshot_2024-07-29_at_5.16.04_AM.png)
 
 > News 
 
-![]('assets/readme/Screenshot 2024-07-29 at 5.17.00 AM.png')
+![](assets/readme/Screenshot_2024-07-29_at_5.17.00_AM.png)
