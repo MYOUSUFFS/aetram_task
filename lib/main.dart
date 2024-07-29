@@ -123,16 +123,27 @@ class _ScreenState extends State<Screen> {
         case 2:
           return SettingScreen();
         default:
-          return const PermissionHandlUi();
+          return PermissionHandlUi(
+            refresh: () {
+              startApp();
+              setState(() {});
+            },
+          );
       }
     } else {
-      return const PermissionHandlUi();
+      return PermissionHandlUi(
+        refresh: () {
+          startApp();
+          setState(() {});
+        },
+      );
     }
   }
 }
 
 class PermissionHandlUi extends StatefulWidget {
-  const PermissionHandlUi({super.key});
+  const PermissionHandlUi({super.key, required this.refresh});
+  final void Function()? refresh;
 
   @override
   State<PermissionHandlUi> createState() => _PermissionHandlUiState();
@@ -169,10 +180,17 @@ class _PermissionHandlUiState extends State<PermissionHandlUi> {
             ),
             const SizedBox(height: 20),
             ElevatedButton(
-                onPressed: () {
-                  Tools.push(context, const NewsHome());
-                },
-                child: const Text('Without access'))
+              onPressed: () {
+                Tools.push(context, const NewsHome());
+              },
+              child: const Text('Without access'),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton.icon(
+              onPressed: widget.refresh,
+              icon: const Icon(Icons.refresh),
+              label: const Text('Check Again'),
+            )
           ],
         ),
       ),
