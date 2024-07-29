@@ -49,17 +49,17 @@
 #### Web Max ~ 1200
 > Weather
 
-![](assets/readme/Screenshot_2024-07-29_at_5.15.44_AM.png)
+![](assets/readme/weather_web.png)
 
 > News 
 
-![](assets/readme/Screenshot_2024-07-29_at_5.16.41_AM.png)
+![](assets/readme/news_web.png)
 
 #### Medium ~ 900
 > Weather
 
-![](assets/readme/Screenshot_2024-07-29_at_5.16.04_AM.png)
+![](assets/readme/weather_tab.png)
 
 > News 
 
-![](assets/readme/Screenshot_2024-07-29_at_5.17.00_AM.png)
+![](assets/readme/news_tab.png)
