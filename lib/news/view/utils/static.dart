@@ -1,5 +1,5 @@
 class StaticData {
-  static const String apiKey = '027ba9368eb64793820e96dc6c8a3d23';
+  static const String apiKey = '1b58f3998e1a49d3b898a36fd46e7795';
   static const List<String> category = [
     'all',
     "business",

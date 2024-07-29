@@ -219,7 +219,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                   color: Colors.white),
             ),
             Text(
-              'Feels Like: ${Temperature.convertTemperature(data.main.feelsLike, weather.temp)}',
+              'Feels Like: ${Temperature.convertTemperature(data.main.feelsLike.toDouble(), weather.temp)}',
               style: GoogleFonts.lato(fontSize: 24, color: Colors.white70),
             ),
             const SizedBox(height: 16),

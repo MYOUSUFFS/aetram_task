@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_print
-
 import 'package:aetram_task/news/controller/provider.dart';
 import 'package:aetram_task/setting/provider.dart';
 import 'package:aetram_task/setting/setting.dart';
@@ -99,10 +97,8 @@ class _ScreenState extends State<Screen> {
 
   Future<bool> _location() async {
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    print(serviceEnabled);
     if (!serviceEnabled) {
       final open = await Geolocator.openLocationSettings();
-      print(open);
       return open;
     } else {
       return true;

@@ -1,6 +1,7 @@
 # Own
 assets/icon
 assets/doc
+lib/news/view/utils/static.dart
 
 # Miscellaneous
 *.class
