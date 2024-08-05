@@ -59,137 +59,159 @@ class _WeatherScreenState extends State<WeatherScreen> {
     }
     return LayoutBuilder(
       builder: (context, sizeIs) {
-        return Scaffold(
-          drawer: sizeIs.maxWidth < ScreenSize.web
-              ? const AppDrawer(pagename: 'Weather')
-              : null,
-          appBar: sizeIs.maxWidth < ScreenSize.web
-              ? AppBar(
-                  title: Text(
-                    'Weather App',
-                    style: GoogleFonts.lato(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  backgroundColor: Colors.deepPurple,
-                  elevation: 0,
-                  actions: [
-                    if (sizeIs.maxWidth < ScreenSize.tab)
-                      IconButton(
-                        icon: const Icon(Icons.newspaper),
-                        onPressed: () {
-                          Tools.push(
-                            context,
-                            Scaffold(
-                              appBar: AppBar(
-                                title: const Text('Temperature News'),
-                                centerTitle: true,
-                                actions: [
-                                  Container(
-                                    margin: const EdgeInsets.all(8),
-                                    padding: const EdgeInsets.all(8),
-                                    decoration: BoxDecoration(
-                                      border: Border.all(),
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: Text(newsHead.toString()),
-                                  )
-                                ],
-                              ),
-                              body: Align(
-                                alignment: Alignment.center,
-                                child:
-                                    NewsList(temperature: true, news: newsHead),
-                              ),
-                            ),
-                          );
-                        },
+        return Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.deepPurple, Colors.blueAccent],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
+          ),
+          child: Scaffold(
+            drawer: sizeIs.maxWidth < ScreenSize.web
+                ? const AppDrawer(pagename: 'Weather')
+                : null,
+            appBar: sizeIs.maxWidth < ScreenSize.web
+                ? AppBar(
+                    title: Text(
+                      'Weather App',
+                      style: GoogleFonts.lato(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
                       ),
-                  ],
-                )
-              : null,
-          body: Row(
-            children: [
-              if (sizeIs.maxWidth > ScreenSize.web)
-                const AppDrawer(
-                  pagename: 'Weather',
-                  colors: Colors.deepPurple,
-                ),
-              Expanded(
-                child: Column(
-                  children: [
-                    if (sizeIs.maxWidth > ScreenSize.tab) ...[
-                      const SizedBox(height: 10),
-                      Container(
-                        color: Colors.deepPurple,
-                        width: double.infinity,
-                        child: Text(
-                          textAlign: TextAlign.center,
-                          'Weather App',
-                          style: GoogleFonts.lato(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                          ),
+                    ),
+                    backgroundColor: Colors.deepPurple,
+                    elevation: 0,
+                    actions: [
+                      if (sizeIs.maxWidth < ScreenSize.tab)
+                        IconButton(
+                          icon: const Icon(Icons.newspaper),
+                          onPressed: () {
+                            Tools.push(
+                              context,
+                              Scaffold(
+                                appBar: AppBar(
+                                  title: const Text('Temperature News'),
+                                  centerTitle: true,
+                                  actions: [
+                                    Container(
+                                      margin: const EdgeInsets.all(8),
+                                      padding: const EdgeInsets.all(8),
+                                      decoration: BoxDecoration(
+                                        border: Border.all(),
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: Text(newsHead.toString()),
+                                    )
+                                  ],
+                                ),
+                                body: Align(
+                                  alignment: Alignment.center,
+                                  child: NewsList(
+                                      temperature: true, news: newsHead),
+                                ),
+                              ),
+                            );
+                          },
                         ),
-                      )
                     ],
-                    Expanded(
-                      child: Container(
-                        decoration: const BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [Colors.deepPurple, Colors.blueAccent],
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
+                  )
+                : null,
+            body: Row(
+              children: [
+                if (sizeIs.maxWidth > ScreenSize.web)
+                  const AppDrawer(
+                    pagename: 'Weather',
+                    colors: Colors.deepPurple,
+                  ),
+                Expanded(
+                  child: Column(
+                    children: [
+                      if (sizeIs.maxWidth > ScreenSize.tab) ...[
+                        // const SizedBox(height: 10),
+                        Container(
+                          color: Colors.deepPurple,
+                          width: double.infinity,
+                          child: Text(
+                            textAlign: TextAlign.center,
+                            'Weather App',
+                            style: GoogleFonts.lato(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                        child: Center(
-                          child: (futureWeatherData != null)
-                              ? buildWeatherInfo(futureWeatherData!)
-                              : const Text('Loading...'),
+                        )
+                      ],
+                      Expanded(
+                        child: Container(
+                          decoration: const BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [Colors.deepPurple, Colors.blueAccent],
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                            ),
+                          ),
+                          child: Center(
+                            child: (futureWeatherData != null)
+                                ? buildWeatherInfo(futureWeatherData!)
+                                : const Text('Loading...'),
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              if (sizeIs.maxWidth > ScreenSize.tab) ...[
-                Expanded(
+                if (sizeIs.maxWidth > ScreenSize.tab) ...[
+                  Expanded(
+                      child: Container(
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [Colors.deepPurple, Colors.blueAccent],
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                      ),
+                    ),
                     child: Column(
-                  children: [
-                    Stack(
-                      alignment: Alignment.center,
                       children: [
-                        const Text(
-                          'Temperature News',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                            fontSize: 24,
+                        Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            const Text(
+                              'Temperature News',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                                fontSize: 24,
+                              ),
+                            ),
+                            if (newsHead != null)
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: Container(
+                                  padding: const EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    border: Border.all(color: Colors.white),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: Text('$newsHead'),
+                                ),
+                              )
+                          ],
+                        ),
+                        // const Divider(),
+                        Expanded(
+                          child: NewsList(
+                            temperature: true,
+                            news: newsHead,
+                            web: true,
                           ),
                         ),
-                        if (newsHead != null)
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: Container(
-                              padding: const EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                border: Border.all(color: Colors.white),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Text('$newsHead'),
-                            ),
-                          )
                       ],
                     ),
-                    const Divider(),
-                    Expanded(
-                      child: NewsList(temperature: true, news: newsHead),
-                    ),
-                  ],
-                ))
-              ]
-            ],
+                  ))
+                ]
+              ],
+            ),
           ),
         );
       },

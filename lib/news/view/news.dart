@@ -94,9 +94,11 @@ class NewsList extends StatefulWidget {
     super.key,
     this.temperature = false,
     this.news,
+    this.web = false,
   });
   final bool temperature;
   final String? news;
+  final bool web;
 
   @override
   State<NewsList> createState() => _NewsListState();
@@ -159,9 +161,9 @@ class _NewsListState extends State<NewsList> {
         child: Align(
           alignment: Alignment.center,
           child: ListView.separated(
-            separatorBuilder: (context, index) => Divider(
-              color: Colors.grey[100],
-            ),
+            separatorBuilder: (context, index) => widget.web
+                ? const SizedBox()
+                : Divider(color: Colors.grey[100]),
             shrinkWrap: true,
             controller: controller,
             physics: const BouncingScrollPhysics(),
@@ -170,6 +172,7 @@ class _NewsListState extends State<NewsList> {
               if (news!.articles != null) {
                 final article = news!.articles![index];
                 return Card(
+                  color: widget.web ? Colors.transparent : null,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
