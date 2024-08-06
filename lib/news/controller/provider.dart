@@ -78,8 +78,12 @@ class NewsTempProvider extends ChangeNotifier {
 
   NewsModel? _news;
   NewsModel? get news => _news;
+  NewsModel? _sad;
+  NewsModel? get sad => _sad;
+  NewsModel? _happy;
+  NewsModel? get happy => _happy;
   int page = 1;
-  final int pageSize = 15;
+  final int pageSize = 100;
   String? category;
   String? country;
 
@@ -100,6 +104,19 @@ class NewsTempProvider extends ChangeNotifier {
         temperature: true,
         news: newsTitle,
       );
+
+      _happy = data?.copyWith(
+        articles: data.articles
+            ?.where((element) => (element.sentimentNews?.score ?? 0) >= 0)
+            .toList(),
+      );
+
+      _sad = data?.copyWith(
+        articles: data.articles
+            ?.where((element) => (element.sentimentNews?.score ?? 0) < 0)
+            .toList(),
+      );
+
       if (_news == null) {
         _news = data;
       } else {

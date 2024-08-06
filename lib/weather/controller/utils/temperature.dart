@@ -23,13 +23,14 @@ class Temperature {
   }
 
   static String tempNews(double rawTemp) {
-    final temp = temperature(rawTemp, 'celsius');
-    if (temp < 0) {
-      return 'depressing';
-    } else if (temp > 30) {
-      return 'fear';
+    final temp = rawTemp; // temperature(rawTemp, 'celsius');
+    // print(temp);
+    if (temp > 30) {
+      return 'Happy';
+    } else if (temp > 0) {
+      return 'Sad';
     } else {
-      return 'happiness';
+      return 'Normal';
     }
   }
 }

@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
 NewsModel newsModelFromJson(String str) => NewsModel.fromJson(json.decode(str));
@@ -29,6 +30,18 @@ class NewsModel {
             ? List<dynamic>.from(articles!.map((x) => x.toJson()))
             : null,
       };
+
+  NewsModel copyWith({
+    String? status,
+    int? totalResults,
+    List<Article>? articles,
+  }) {
+    return NewsModel(
+      status: status,
+      totalResults: totalResults,
+      articles: articles,
+    );
+  }
 }
 
 class Article {
@@ -40,6 +53,7 @@ class Article {
   dynamic urlToImage;
   DateTime? publishedAt;
   dynamic content;
+  SentimentNews? sentimentNews;
 
   Article({
     this.source,
@@ -50,6 +64,7 @@ class Article {
     this.urlToImage,
     this.publishedAt,
     this.content,
+    this.sentimentNews,
   });
 
   factory Article.fromJson(Map<String, dynamic> json) => Article(
@@ -63,6 +78,9 @@ class Article {
             ? null
             : DateTime.parse(json["publishedAt"]),
         content: json["content"],
+        sentimentNews: json["sentimentNews"] != null
+            ? SentimentNews.fromJson(json["sentimentNews"])
+            : null,
       );
 
   Map<String, dynamic> toJson() => {
@@ -74,6 +92,7 @@ class Article {
         "urlToImage": urlToImage,
         "publishedAt": publishedAt?.toIso8601String(),
         "content": content,
+        "sentimentNews": sentimentNews?.toJson(),
       };
 }
 
@@ -94,5 +113,60 @@ class Source {
   Map<String, dynamic> toJson() => {
         "id": id,
         "name": name,
+      };
+}
+
+List<SentimentNews> sentimentNewsFromJson(String str) =>
+    List<SentimentNews>.from(
+        json.decode(str).map((x) => SentimentNews.fromJson(x)));
+
+String sentimentNewsToJson(List<SentimentNews> data) =>
+    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+
+class SentimentNews {
+  int? score;
+  double? comparative;
+  Words? words;
+
+  SentimentNews({
+    this.score,
+    this.comparative,
+    this.words,
+  });
+
+  factory SentimentNews.fromJson(Map<String, dynamic> json) => SentimentNews(
+        score: json["score"],
+        comparative: json["comparative"]?.toDouble(),
+        words: json["words"] == null ? null : Words.fromJson(json["words"]),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "score": score,
+        "comparative": comparative,
+        "words": words?.toJson(),
+      };
+}
+
+class Words {
+  List<String>? all;
+  Map<String, dynamic>? good;
+  Map<String, dynamic>? bad;
+
+  Words({
+    this.all,
+    this.good,
+    this.bad,
+  });
+
+  factory Words.fromJson(Map<String, dynamic> json) => Words(
+        all: List<String>.from(json["all"].map((x) => x)),
+        good: json["good"],
+        bad: json["bad"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "all": all != null ? List<dynamic>.from(all!.map((x) => x)) : null,
+        "good": good,
+        "bad": bad,
       };
 }

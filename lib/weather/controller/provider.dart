@@ -29,7 +29,7 @@ class WeatherProvider extends ChangeNotifier {
       loadChange(true);
       WeatherData? value = await WeatherApi().fetchWeatherData(context);
       _futureWeatherData = value;
-      _currentTemp = value.main.temp;
+      _currentTemp = Temperature.temperature(value.main.temp, 'celsius');
       final modeOf = Temperature.tempNews(_currentTemp!);
       await newsTemp.hotNews(modeOf);
       loadChange(false);

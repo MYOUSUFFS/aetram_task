@@ -1,3 +1,4 @@
+import 'package:aetram_task/weather/controller/provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -109,7 +110,6 @@ class _NewsListState extends State<NewsList> {
   late NewsProvider newsProvider;
   final ScrollController controller = ScrollController();
   NewsModel? news;
-  final int pageSize = 15;
 
   @override
   void initState() {
@@ -120,6 +120,7 @@ class _NewsListState extends State<NewsList> {
       if (!widget.temperature) {
         if (newsProvider.news == null) {
           await newsProvider.newsApiCall();
+          setState(() {});
         }
       }
       // Todo :- This is for get api call without pre init app.
@@ -150,8 +151,15 @@ class _NewsListState extends State<NewsList> {
   Widget build(BuildContext context) {
     newsProvider = Provider.of<NewsProvider>(context);
     newsTempProvider = Provider.of<NewsTempProvider>(context);
+    final weather = Provider.of<WeatherProvider>(context);
     if (widget.temperature) {
-      news = newsTempProvider.news;
+      if ((weather.currentTemp ?? 0) > 30) {
+        news = newsTempProvider.happy;
+      } else if ((weather.currentTemp ?? 0) < 30) {
+        news = newsTempProvider.sad;
+      } else {
+        news = newsTempProvider.news;
+      }
     } else {
       news = newsProvider.news;
     }
