@@ -46,8 +46,8 @@ class NewsApi {
               }
             }
           }
-          // print(jsonEncode(news.toJson()));
         }
+        // print(jsonEncode(news.toJson()));
         return news;
       } else {
         throw Exception('Failed to load users');
