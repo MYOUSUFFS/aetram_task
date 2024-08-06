@@ -105,22 +105,33 @@ class NewsTempProvider extends ChangeNotifier {
         news: newsTitle,
       );
 
-      _happy = data?.copyWith(
-        articles: data.articles
-            ?.where((element) => (element.sentimentNews?.score ?? 0) >= 0)
-            .toList(),
-      );
-
-      _sad = data?.copyWith(
-        articles: data.articles
-            ?.where((element) => (element.sentimentNews?.score ?? 0) < 0)
-            .toList(),
-      );
-
       if (_news == null) {
         _news = data;
+        _happy = data?.copyWith(
+          articles: data.articles
+              ?.where((element) => (element.sentimentNews?.score ?? 0) >= 0)
+              .toList(),
+        );
+
+        _sad = data?.copyWith(
+          articles: data.articles
+              ?.where((element) => (element.sentimentNews?.score ?? 0) < 0)
+              .toList(),
+        );
       } else {
         _news!.articles!.addAll(data!.articles!);
+        final happyIs = data.copyWith(
+          articles: data.articles
+              ?.where((element) => (element.sentimentNews?.score ?? 0) >= 0)
+              .toList(),
+        );
+        final sadIs = data.copyWith(
+          articles: data.articles
+              ?.where((element) => (element.sentimentNews?.score ?? 0) < 0)
+              .toList(),
+        );
+        _happy!.articles!.addAll(happyIs.articles!);
+        _sad!.articles!.addAll(sadIs.articles!);
       }
     } catch (e) {
       debugPrint(e.toString());

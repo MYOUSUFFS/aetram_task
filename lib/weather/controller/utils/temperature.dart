@@ -26,9 +26,9 @@ class Temperature {
     final temp = rawTemp; // temperature(rawTemp, 'celsius');
     // print(temp);
     if (temp > 30) {
-      return 'Happy';
-    } else if (temp > 0) {
-      return 'Sad';
+      return 'Good';
+    } else if (temp < 30) {
+      return 'Bad';
     } else {
       return 'Normal';
     }
